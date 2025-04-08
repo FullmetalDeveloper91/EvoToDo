@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class Task {
     @Id @GeneratedValue
     private Long id;
-    private Long user_id;
+    private String user;
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime successAt;
