@@ -4,6 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.fmd.user_service.user_service.repository.UserRepository;
 
@@ -13,9 +14,11 @@ import java.util.List;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserDetailsServiceImpl(UserRepository repository) {
+    public UserDetailsServiceImpl(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
                 @Override
                 public String getPassword() {
-                    return user.getPassword();
+                    return passwordEncoder.encode(user.getPassword());
                 }
 
                 @Override
