@@ -14,11 +14,9 @@ import java.util.List;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository repository;
-    private final PasswordEncoder passwordEncoder;
 
-    public UserDetailsServiceImpl(UserRepository repository, PasswordEncoder passwordEncoder) {
+    public UserDetailsServiceImpl(UserRepository repository) {
         this.repository = repository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -33,14 +31,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     return List.of(new GrantedAuthority() {
                         @Override
                         public String getAuthority() {
-                            return user.getRole().name();
+                            return String.format("ROLE_%s", user.getRole().name());
                         }
                     });
                 }
 
                 @Override
                 public String getPassword() {
-                    return passwordEncoder.encode(user.getPassword());
+                    return user.getPassword();
                 }
 
                 @Override

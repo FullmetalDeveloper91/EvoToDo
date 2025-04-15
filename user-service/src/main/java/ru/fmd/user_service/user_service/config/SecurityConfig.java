@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -18,6 +19,7 @@ import ru.fmd.user_service.user_service.filter.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
@@ -34,7 +36,11 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(
                         requestMatchersRegistry -> requestMatchersRegistry
-                                .requestMatchers("/login/**", "/register/**").permitAll()
+                                .requestMatchers(
+                                        "/api/v1/user/login/**",
+                                        "/api/v1/user/register/**")
+                                    .permitAll()
+                                //.requestMatchers("/api/v1/user").hasAnyRole("USER","ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .userDetailsService(userDetailsService)

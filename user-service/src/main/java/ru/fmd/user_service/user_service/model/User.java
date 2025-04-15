@@ -3,9 +3,11 @@ package ru.fmd.user_service.user_service.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "UserDetails")
 public class User{
-    @Id @GeneratedValue
-    private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private int id;
+    @Column(unique = true)
     private String login;
     private String password;
     private String fio;
@@ -15,17 +17,22 @@ public class User{
     public User() {
     }
 
+    public User(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
+
     public User(String login, String password, Role role) {
         this.login = login;
         this.password = password;
         this.role = role;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -16,9 +16,9 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    @Value("jwt.private_key")
+    @Value("${jwt.private_key}")
     private String SECRET_KEY;
-    @Value("jwt.ttl")
+    @Value("${jwt.ttl}")
     private Long JwtTtl;
 
     public String generateToken(User user){
@@ -37,7 +37,7 @@ public class JwtService {
 
     public boolean isValid(String token, UserDetails user){
         String username = extractUsername(token);
-        return username.equals(user.getUsername()) && isTokenExpired(token);
+        return username.equals(user.getUsername()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
