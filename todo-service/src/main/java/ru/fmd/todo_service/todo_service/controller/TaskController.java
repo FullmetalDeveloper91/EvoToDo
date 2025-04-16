@@ -2,12 +2,13 @@ package ru.fmd.todo_service.todo_service.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.fmd.todo_service.todo_service.model.Task;
+import ru.fmd.todo_service.todo_service.model.User;
 import ru.fmd.todo_service.todo_service.service.TaskService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = {"/api/v1/tasks"})
+@RequestMapping(path = {"/api/v1/task"})
 public class TaskController {
 
     private final TaskService taskService;
@@ -39,5 +40,10 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public Task delete(@PathVariable Long id) {
         return taskService.delete(id);
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody User user){
+        return taskService.login(user);
     }
 }

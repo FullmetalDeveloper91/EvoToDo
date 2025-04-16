@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="log-service" />
+        <module name="discovery_server" />
         <module name="user-service" />
         <module name="todo-service" />
       </profile>
@@ -14,6 +15,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="discovery_server" options="-parameters" />
       <module name="log-service" options="-parameters" />
       <module name="todo-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
