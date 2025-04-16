@@ -3,7 +3,9 @@ package ru.fmd.user_service.user_service.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
+import ru.fmd.user_service.user_service.model.Role;
 import ru.fmd.user_service.user_service.model.User;
 import ru.fmd.user_service.user_service.service.UserService;
 
@@ -20,9 +22,10 @@ public class UserController {
     }
 
     @GetMapping
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    public List<User> findAll(){
-        return userService.findAll();
+    public List<User> findAll(SecurityContextHolderAwareRequestWrapper securityContext){
+        return securityContext.isUserInRole(Role.ADMIN.name())
+                ? userService.findAll()
+                : List.of(userService.findByLogin(securityContext.getRemoteUser()).orElse(null));
     }
 
     @PostMapping("/register")

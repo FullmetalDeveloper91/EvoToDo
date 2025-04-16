@@ -19,7 +19,6 @@ import ru.fmd.user_service.user_service.filter.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
@@ -33,21 +32,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity
-                .csrf(CsrfConfigurer::disable)
-                .authorizeHttpRequests(
-                        requestMatchersRegistry -> requestMatchersRegistry
-                                .requestMatchers(
-                                        "/api/v1/user/login/**",
-                                        "/api/v1/user/register/**")
-                                    .permitAll()
-                                //.requestMatchers("/api/v1/user").hasAnyRole("USER","ADMIN")
-                                .anyRequest().authenticated()
-                )
-                .userDetailsService(userDetailsService)
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+            .csrf(CsrfConfigurer::disable)
+            .authorizeHttpRequests(requestMatchersRegistry -> requestMatchersRegistry
+                .requestMatchers(
+                        "/api/v1/user/login/**",
+                        "/api/v1/user/register/**")
+                    .permitAll()
+                .requestMatchers("/api/v1/user").hasAnyRole("USER","ADMIN")
+                .anyRequest().authenticated()
+            )
+            .userDetailsService(userDetailsService)
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
     }
 
     @Bean
@@ -55,8 +53,8 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(@NonNull AuthenticationConfiguration configuration) throws Exception{
-        return configuration.getAuthenticationManager();
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(@NonNull AuthenticationConfiguration configuration) throws Exception{
+//        return configuration.getAuthenticationManager();
+//    }
 }

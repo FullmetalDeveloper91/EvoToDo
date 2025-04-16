@@ -5,7 +5,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.stereotype.Service;
+import ru.fmd.user_service.user_service.model.Role;
 import ru.fmd.user_service.user_service.model.User;
 import ru.fmd.user_service.user_service.repository.UserRepository;
 
@@ -26,11 +29,11 @@ public class UserService {
     }
 
     public List<User> findAll(){
-       // var auth = SecurityContextHolder.getContext().getAuthentication();
-        //if(auth.getAuthorities().)
-            return repository.findAll();
-       // else
-           // return List.of(repository.getUserByLogin(auth.getName()).get());
+        return repository.findAll();
+    }
+
+    public Optional<User> findByLogin(String login){
+        return repository.getUserByLogin(login);
     }
 
     public User registerUser(User user){
