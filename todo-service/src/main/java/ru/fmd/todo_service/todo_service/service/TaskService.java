@@ -2,12 +2,13 @@ package ru.fmd.todo_service.todo_service.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import ru.fmd.todo_service.todo_service.model.Task;
 import ru.fmd.todo_service.todo_service.model.User;
-import ru.fmd.todo_service.todo_service.repository.tasksRepository;
+import ru.fmd.todo_service.todo_service.repository.TasksRepository;
+import ru.fmd.todo_service.todo_service.repository.UserServiceDao;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,12 +18,12 @@ public class TaskService {
     @Value("${user-service.base_url}")
     private String BASE_URL;
 
-    private final tasksRepository tasksRepository;
-    private final RestTemplate restTemplate;
+    private final TasksRepository tasksRepository;
+    private final UserServiceDao userServiceDao;
 
-    public TaskService(tasksRepository tasksRepository, RestTemplate restTemplate) {
+    public TaskService(TasksRepository tasksRepository, UserServiceDao userServiceDao) {
         this.tasksRepository = tasksRepository;
-        this.restTemplate = restTemplate;
+        this.userServiceDao = userServiceDao;
     }
 
     public List<Task> getAll() {
@@ -55,6 +56,10 @@ public class TaskService {
     }
 
     public String login(User user){
-        return restTemplate.postForObject(BASE_URL+"/login", user, String.class);
+        return userServiceDao.login(user);
+    }
+
+    public ResponseEntity <User> getUserByLogin(String login, String token){
+        return userServiceDao.getUserByLogin(login, token);
     }
 }

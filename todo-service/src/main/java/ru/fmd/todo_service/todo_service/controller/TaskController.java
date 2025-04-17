@@ -1,5 +1,7 @@
 package ru.fmd.todo_service.todo_service.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.fmd.todo_service.todo_service.model.Task;
 import ru.fmd.todo_service.todo_service.model.User;
@@ -25,6 +27,12 @@ public class TaskController {
     @GetMapping("/{id}")
     public Task getOne(@PathVariable Long id) {
         return taskService.getOne(id);
+    }
+
+    @GetMapping("/user/{login}")
+    public ResponseEntity<User> getUserById(@PathVariable String login, HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7);
+        return taskService.getUserByLogin(login, token);
     }
 
     @PostMapping

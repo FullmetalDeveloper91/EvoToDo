@@ -1,7 +1,7 @@
 package ru.fmd.user_service.user_service.controller;
 
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping("/api/v1/user")
 public class UserController {
 
+
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -26,6 +27,11 @@ public class UserController {
         return securityContext.isUserInRole(Role.ADMIN.name())
                 ? userService.findAll()
                 : List.of(userService.findByLogin(securityContext.getRemoteUser()).orElse(null));
+    }
+
+    @GetMapping("/{login}")
+    public ResponseEntity<User> findByLogin(@PathVariable String login){
+        return ResponseEntity.ok(userService.findByLogin(login).get());
     }
 
     @PostMapping("/register")

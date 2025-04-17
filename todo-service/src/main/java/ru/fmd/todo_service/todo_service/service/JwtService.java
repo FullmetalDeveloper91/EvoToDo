@@ -1,4 +1,4 @@
-package ru.fmd.user_service.user_service.service;
+package ru.fmd.todo_service.todo_service.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -6,34 +6,19 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-import ru.fmd.user_service.user_service.model.User;
+import ru.fmd.todo_service.todo_service.model.User;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-@Service
 public class JwtService {
     @Value("${jwt.private_key}")
     private String SECRET_KEY;
-    @Value("${jwt.ttl}")
-    private Long JwtTtl;
 
-    public String generateToken(User user){
-        return Jwts.builder()
-            .subject(user.getLogin())
-            .claim("role", user.getRole().name())
-            .issuedAt(new Date(System.currentTimeMillis()))
-            .expiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(JwtTtl)))
-            .signWith(getSignKey())
-            .compact();
-    }
-
-    public boolean isValid(String token, UserDetails user){
+    public boolean isValid(String token, User user){
         String username = extractUsername(token);
-        return username.equals(user.getUsername()) && !isTokenExpired(token);
+        return username.equals(user.getLogin()) && !isTokenExpired(token);
     }
 
     public String extractUsername(String token){
@@ -44,14 +29,13 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
-
     private <T> T extractClaim(String token, Function<Claims,T> resolver){
         Claims claims = extractAllClaims(token);
-
         return resolver.apply(claims);
+    }
+
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 
     private Claims extractAllClaims(String token){

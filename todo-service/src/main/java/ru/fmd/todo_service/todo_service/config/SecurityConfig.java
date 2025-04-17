@@ -6,7 +6,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 @EnableWebSecurity
@@ -18,6 +17,9 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(managerRequestMatchers -> managerRequestMatchers
                         .requestMatchers("/api/v1/task/login/**").permitAll()
+                        .requestMatchers("/api/v1/task/register/**").permitAll()
+                        .requestMatchers("/api/v1/task/user/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .build();
     }

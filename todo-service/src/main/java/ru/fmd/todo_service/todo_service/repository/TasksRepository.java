@@ -5,6 +5,6 @@ import ru.fmd.todo_service.todo_service.model.Task;
 
 import java.util.List;
 
-public interface tasksRepository extends JpaRepository<Task, Long> {
+public interface TasksRepository extends JpaRepository<Task, Long> {
     List<Task> findByLogin(String login);
 }
