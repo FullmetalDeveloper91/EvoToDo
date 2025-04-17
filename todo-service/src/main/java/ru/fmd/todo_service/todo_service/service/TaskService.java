@@ -5,11 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import ru.fmd.todo_service.todo_service.model.Status;
 import ru.fmd.todo_service.todo_service.model.Task;
 import ru.fmd.todo_service.todo_service.model.User;
 import ru.fmd.todo_service.todo_service.repository.TasksRepository;
 import ru.fmd.todo_service.todo_service.repository.UserServiceDao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +39,8 @@ public class TaskService {
     }
 
     public Task create(Task task) {
+        task.setCreatedAt(LocalDateTime.now());
+        task.setStatus(Status.CREATED);
         return tasksRepository.save(task);
     }
 

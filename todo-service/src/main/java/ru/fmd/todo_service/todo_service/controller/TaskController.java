@@ -2,6 +2,7 @@ package ru.fmd.todo_service.todo_service.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
 import ru.fmd.todo_service.todo_service.model.Task;
 import ru.fmd.todo_service.todo_service.model.User;
@@ -36,7 +37,8 @@ public class TaskController {
     }
 
     @PostMapping
-    public Task create(@RequestBody Task task) {
+    public Task create(@RequestBody Task task, SecurityContextHolderAwareRequestWrapper securityContext) {
+        task.setLogin(securityContext.getRemoteUser());
         return taskService.create(task);
     }
 

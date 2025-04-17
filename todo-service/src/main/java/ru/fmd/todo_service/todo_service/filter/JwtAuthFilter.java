@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.fmd.todo_service.todo_service.repository.UserServiceDao;
 import ru.fmd.todo_service.todo_service.service.JwtService;
@@ -15,9 +16,11 @@ import ru.fmd.todo_service.todo_service.service.JwtService;
 import java.io.IOException;
 import java.util.List;
 
+@Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final String PREFIX = "Bearer ";
+    private final String BEARER_PREFIX = "Bearer ";
+    private final String ROLE_PREFIX = "ROLE_";
     private final JwtService jwtService;
     private final UserServiceDao userServiceDao;
 
@@ -35,8 +38,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null && authHeader.startsWith(PREFIX)) {
-            String token = authHeader.substring(PREFIX.length());
+        if (authHeader != null && authHeader.startsWith(BEARER_PREFIX)) {
+            String token = authHeader.substring(BEARER_PREFIX.length());
             String username = jwtService.extractUsername(token);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -44,7 +47,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                 if (jwtService.isValid(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, List.of((GrantedAuthority) () -> userDetails.getRole().name())
+                        userDetails,
+                        null,
+                        List.of((GrantedAuthority) () -> ROLE_PREFIX + userDetails.getRole().name())
                     );
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

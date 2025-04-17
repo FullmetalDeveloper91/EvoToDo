@@ -6,7 +6,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -17,11 +16,9 @@ import ru.fmd.user_service.user_service.filter.JwtAuthFilter;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final UserDetailsService userDetailsService;
     private final JwtAuthFilter jwtFilter;
 
-    public SecurityConfig(UserDetailsService userDetailsService, JwtAuthFilter jwtFilter) {
-        this.userDetailsService = userDetailsService;
+    public SecurityConfig(JwtAuthFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
     }
 
@@ -47,9 +44,4 @@ public class SecurityConfig {
     PasswordEncoder getPasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
-
-//    @Bean
-//    public AuthenticationManager authenticationManager(@NonNull AuthenticationConfiguration configuration) throws Exception{
-//        return configuration.getAuthenticationManager();
-//    }
 }
