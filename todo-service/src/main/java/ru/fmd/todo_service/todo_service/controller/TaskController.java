@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
 import ru.fmd.todo_service.todo_service.model.Task;
+import ru.fmd.todo_service.todo_service.model.TaskRequestDTO;
 import ru.fmd.todo_service.todo_service.model.User;
 import ru.fmd.todo_service.todo_service.service.TaskService;
 
@@ -21,8 +22,11 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<Task> getAll() {
-        return taskService.getAll();
+    public List<Task> getAll(SecurityContextHolderAwareRequestWrapper securityContext) {
+        if(securityContext.isUserInRole("ADMIN"))
+            return taskService.getAll();
+        else
+            return taskService.getAll(securityContext.getRemoteUser());
     }
 
     @GetMapping("/{id}")
@@ -37,14 +41,21 @@ public class TaskController {
     }
 
     @PostMapping
-    public Task create(@RequestBody Task task, SecurityContextHolderAwareRequestWrapper securityContext) {
-        task.setLogin(securityContext.getRemoteUser());
-        return taskService.create(task);
+    public Task create(@RequestBody TaskRequestDTO taskReq, SecurityContextHolderAwareRequestWrapper securityContext) {
+        return taskService.create(taskReq.getDescription(), securityContext.getRemoteUser());
     }
 
     @PutMapping("/{id}")
-    public Task update(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.update(id, task);
+    public Task update(@PathVariable Long id, @RequestBody TaskRequestDTO taskReq) {
+        return taskService.update(id, taskReq.getDescription());
+    }
+
+    @PutMapping("/{id}/close")
+    public Task closeTask(@PathVariable Long id, SecurityContextHolderAwareRequestWrapper securityContext){
+        if(securityContext.isUserInRole("ADMIN"))
+            return taskService.closeTask(id);
+        else
+            return taskService.closeTask(id, securityContext.getRemoteUser());
     }
 
     @DeleteMapping("/{id}")

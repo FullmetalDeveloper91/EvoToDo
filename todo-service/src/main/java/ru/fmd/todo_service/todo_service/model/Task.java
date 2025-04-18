@@ -18,10 +18,11 @@ public class Task {
     public Task() {
     }
 
-    public Task(String login, String description, Status status) {
+    public Task(String login, String description) {
         this.login = login;
         this.description = description;
-        this.status = status;
+        this.status = Status.CREATED;
+        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() {
