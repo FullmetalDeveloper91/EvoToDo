@@ -24,10 +24,6 @@ public class UserServiceDao {
         this.restTemplate = restTemplate;
     }
 
-    public String login(User user){
-        return restTemplate.postForObject(BASE_URL+"/login", user, String.class);
-    }
-
     public ResponseEntity<User> getUserByLogin(String login, String token){
         return getWithToken(BASE_URL+"/{login}", login, token);
     }

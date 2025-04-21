@@ -23,11 +23,9 @@ public class TaskService {
     private String BASE_URL;
 
     private final TasksRepository tasksRepository;
-    private final UserServiceDao userServiceDao;
 
-    public TaskService(TasksRepository tasksRepository, UserServiceDao userServiceDao) {
+    public TaskService(TasksRepository tasksRepository) {
         this.tasksRepository = tasksRepository;
-        this.userServiceDao = userServiceDao;
     }
 
     public List<Task> getAll() {
@@ -81,17 +79,7 @@ public class TaskService {
         return task;
     }
 
-    public String login(User user){
-        return userServiceDao.login(user);
-    }
-
-    public ResponseEntity <User> getUserByLogin(String login, String token){
-        return userServiceDao.getUserByLogin(login, token);
-    }
-
     private ResponseStatusException notFoundExceptionMethod(Long id){
         return new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id));
     }
-
-
 }

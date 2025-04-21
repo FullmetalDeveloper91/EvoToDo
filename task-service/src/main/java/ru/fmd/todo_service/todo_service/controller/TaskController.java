@@ -1,12 +1,9 @@
 package ru.fmd.todo_service.todo_service.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
 import ru.fmd.todo_service.todo_service.model.Task;
 import ru.fmd.todo_service.todo_service.model.TaskRequestDTO;
-import ru.fmd.todo_service.todo_service.model.User;
 import ru.fmd.todo_service.todo_service.service.TaskService;
 
 import java.util.List;
@@ -23,10 +20,9 @@ public class TaskController {
 
     @GetMapping
     public List<Task> getAll(SecurityContextHolderAwareRequestWrapper securityContext) {
-        if(securityContext.isUserInRole("ADMIN"))
-            return taskService.getAll();
-        else
-            return taskService.getAll(securityContext.getRemoteUser());
+        return securityContext.isUserInRole("ADMIN")
+            ? taskService.getAll()
+            : taskService.getAll(securityContext.getRemoteUser());
     }
 
     @GetMapping("/{id}")
@@ -34,17 +30,12 @@ public class TaskController {
         return taskService.getOne(id);
     }
 
-    @GetMapping("/user/{login}")
-    public ResponseEntity<User> getUserById(@PathVariable String login, HttpServletRequest request){
-        String token = request.getHeader("Authorization").substring(7);
-        return taskService.getUserByLogin(login, token);
-    }
-
     @PostMapping
     public Task create(@RequestBody TaskRequestDTO taskReq, SecurityContextHolderAwareRequestWrapper securityContext) {
-        return taskService.create(taskReq.getDescription(), securityContext.getRemoteUser());
+        return taskService.create(securityContext.getRemoteUser(),taskReq.getDescription());
     }
 
+    //TODO Добавить секьюрность. Изменять таски может админ или оунер
     @PutMapping("/{id}")
     public Task update(@PathVariable Long id, @RequestBody TaskRequestDTO taskReq) {
         return taskService.update(id, taskReq.getDescription());
@@ -58,13 +49,9 @@ public class TaskController {
             return taskService.closeTask(id, securityContext.getRemoteUser());
     }
 
+    //TODO Добавить секьюрность. Удалять таски может админ или оунер
     @DeleteMapping("/{id}")
     public Task delete(@PathVariable Long id) {
         return taskService.delete(id);
-    }
-
-    @PostMapping("/login")
-    public String login(@RequestBody User user){
-        return taskService.login(user);
     }
 }

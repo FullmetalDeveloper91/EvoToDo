@@ -1,8 +1,11 @@
 package ru.fmd.user_service.user_service.service;
 
+import org.springframework.data.util.Pair;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.fmd.user_service.user_service.model.Role;
 import ru.fmd.user_service.user_service.model.User;
 import ru.fmd.user_service.user_service.repository.UserRepository;
 
@@ -33,6 +36,8 @@ public class UserService {
         if(repository.existsByLoginIgnoreCase(user.getLogin()))
             throw new IllegalArgumentException(String.format("User with login %s is already register", user.getLogin()));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if(user.getRole() == null)
+            user.setRole(Role.USER);
         return repository.save(user);
     }
 
@@ -43,5 +48,13 @@ public class UserService {
             throw new UsernameNotFoundException("Invalid credentials");
 
         return jwtService.generateToken(userFromDb);
+    }
+
+    public Pair<Boolean, Optional<User>> update(User user) {
+        return null;
+    }
+
+    public ResponseEntity<User> delete(String login) {
+        return null;
     }
 }
