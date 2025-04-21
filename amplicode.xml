@@ -2,14 +2,14 @@
 <project version="4">
   <component name="AmplicodePersistenceUnitSettings">
     <persistence-units>
-      <persistence-unit moduleName="todo-service" name="Default">
-        <packages>
-          <package value="ru.fmd.todo_service.todo_service" />
-        </packages>
-      </persistence-unit>
       <persistence-unit moduleName="user-service" name="Default">
         <packages>
           <package value="ru.fmd.user_service.user_service" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="task-service" name="Default">
+        <packages>
+          <package value="ru.fmd.todo_service.todo_service" />
         </packages>
       </persistence-unit>
     </persistence-units>

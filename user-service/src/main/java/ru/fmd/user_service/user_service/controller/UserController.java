@@ -24,9 +24,11 @@ public class UserController {
 
     @GetMapping
     public List<User> findAll(SecurityContextHolderAwareRequestWrapper securityContext){
-        return securityContext.isUserInRole(Role.ADMIN.name())
-                ? userService.findAll()
-                : List.of(userService.findByLogin(securityContext.getRemoteUser()).orElse(null));
+//        return securityContext.isUserInRole(Role.ADMIN.name())
+//                ? userService.findAll()
+//                : List.of(userService.findByLogin(securityContext.getRemoteUser()).orElse(null));
+
+        return userService.findAll();
     }
 
     @GetMapping("/{login}")
