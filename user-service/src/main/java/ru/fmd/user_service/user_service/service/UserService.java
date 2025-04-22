@@ -1,12 +1,14 @@
 package ru.fmd.user_service.user_service.service;
 
-import org.springframework.data.util.Pair;
-import org.springframework.http.ResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.fmd.user_service.user_service.model.Role;
 import ru.fmd.user_service.user_service.model.User;
+import ru.fmd.user_service.user_service.model.UserUpdateDto;
 import ru.fmd.user_service.user_service.repository.UserRepository;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository repository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
@@ -50,11 +53,17 @@ public class UserService {
         return jwtService.generateToken(userFromDb);
     }
 
-    public Pair<Boolean, Optional<User>> update(User user) {
-        return null;
+    @Transactional
+    public User update(String login, UserUpdateDto updateUser) throws UsernameNotFoundException {
+        return repository.getUserByLogin(login)
+                .map(updateUser::mapToUser)
+                .orElseThrow(()->new UsernameNotFoundException("User not found"));
     }
 
-    public ResponseEntity<User> delete(String login) {
-        return null;
+    @Transactional
+    public void delete(String login) throws UsernameNotFoundException {
+        var user = repository.getUserByLogin(login);
+        user.ifPresent(repository::delete);
+        user.ifPresentOrElse(repository::delete, () -> {throw new UsernameNotFoundException("User not found");});
     }
 }

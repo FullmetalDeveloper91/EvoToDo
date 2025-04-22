@@ -1,43 +1,19 @@
 package ru.fmd.user_service.user_service.model;
 
-import jakarta.persistence.*;
-
-
-//TODO Добавить валидацию
-@Entity
-@Table(name = "UserDetails")
-public class User{
-    @Id @GeneratedValue
-    private int id;
-    @Column(unique = true)
+public class NewUserDto {
     private String login;
     private String password;
     private String fio;
-    @Enumerated(EnumType.STRING)
     private Role role;
 
-    public User() {
+    public NewUserDto() {
     }
 
-    public User(String login, String password) {
-        this.login = login;
-        this.password = password;
-    }
-
-    public User(String login, String password, String fio, Role role) {
+    public NewUserDto(String login, String password, String fio, Role role) {
         this.login = login;
         this.password = password;
         this.fio = fio;
         this.role = role;
-    }
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getLogin() {

@@ -24,9 +24,6 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(managerRequestMatchers -> managerRequestMatchers
-                        .requestMatchers("/api/v1/task/login/**").permitAll()
-                        .requestMatchers("/api/v1/task/register/**").permitAll()
-                        .requestMatchers("/api/v1/task/user/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
