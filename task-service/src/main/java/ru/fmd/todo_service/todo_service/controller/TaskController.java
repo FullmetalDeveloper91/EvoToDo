@@ -1,7 +1,13 @@
 package ru.fmd.todo_service.todo_service.controller;
 
+import jakarta.ws.rs.QueryParam;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import ru.fmd.todo_service.todo_service.model.Role;
 import ru.fmd.todo_service.todo_service.model.Task;
 import ru.fmd.todo_service.todo_service.model.TaskRequestDTO;
 import ru.fmd.todo_service.todo_service.service.TaskService;
@@ -18,40 +24,71 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Task>> getAllTasks() {
+        return ResponseEntity.ok(taskService.getAll());
+    }
+
     @GetMapping
-    public List<Task> getAll(SecurityContextHolderAwareRequestWrapper securityContext) {
-        return securityContext.isUserInRole("ADMIN")
-            ? taskService.getAll()
-            : taskService.getAll(securityContext.getRemoteUser());
+    public ResponseEntity<List<Task>> getTasksByLogin(
+            @QueryParam("login") String login,
+            SecurityContextHolderAwareRequestWrapper securityContext){
+        if(login.equals(securityContext.getRemoteUser()) || securityContext.isUserInRole(Role.ADMIN.name()))
+            return ResponseEntity.ok(taskService.getByLogin(login));
+        else
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @GetMapping("/{id}")
-    public Task getOne(@PathVariable Long id) {
-        return taskService.getOne(id);
+    public ResponseEntity<Task> getOne(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.getOne(id));
     }
 
     @PostMapping
-    public Task create(@RequestBody TaskRequestDTO taskReq, SecurityContextHolderAwareRequestWrapper securityContext) {
-        return taskService.create(securityContext.getRemoteUser(),taskReq.getDescription());
+    public ResponseEntity<Task> create(
+            @RequestBody TaskRequestDTO taskReq,
+            SecurityContextHolderAwareRequestWrapper securityContext) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(taskService.create(securityContext.getRemoteUser(),taskReq.getDescription()));
     }
 
-    //TODO Добавить секьюрность. Изменять таски может админ или оунер
     @PutMapping("/{id}")
-    public Task update(@PathVariable Long id, @RequestBody TaskRequestDTO taskReq) {
-        return taskService.update(id, taskReq.getDescription());
+    public ResponseEntity<Task> update(
+            @PathVariable Long id,
+            @RequestBody TaskRequestDTO taskReq,
+            SecurityContextHolderAwareRequestWrapper securityContext) {
+        try{
+            return ResponseEntity.ok(taskService.update(
+                    id,
+                    taskReq.getDescription(),
+                    securityContext.getRemoteUser()));
+        }catch (AuthorizationDeniedException ex){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
+    //TODO Исправить тело метода на стратегию или добавить ExceptionHandler
     @PutMapping("/{id}/close")
-    public Task closeTask(@PathVariable Long id, SecurityContextHolderAwareRequestWrapper securityContext){
-        if(securityContext.isUserInRole("ADMIN"))
-            return taskService.closeTask(id);
-        else
-            return taskService.closeTask(id, securityContext.getRemoteUser());
+    public ResponseEntity<Task> closeTask(@PathVariable Long id, SecurityContextHolderAwareRequestWrapper securityContext){
+        try{
+            return ResponseEntity.ok(taskService.closeTask(id, securityContext.getRemoteUser()));
+        }catch (AuthorizationDeniedException ex){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }catch (ResponseStatusException ex){
+            return  ResponseEntity.status(ex.getStatusCode()).build();
+        }
     }
 
-    //TODO Добавить секьюрность. Удалять таски может админ или оунер
+    //TODO Исправить тело метода на стратегию или добавить ExceptionHandler
     @DeleteMapping("/{id}")
-    public Task delete(@PathVariable Long id) {
-        return taskService.delete(id);
+    public ResponseEntity<Task> delete(@PathVariable Long id, SecurityContextHolderAwareRequestWrapper securityContext) {
+        try{
+            return ResponseEntity.ok(taskService.delete(id, securityContext.getRemoteUser()));
+        }catch (AuthorizationDeniedException ex){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }catch (ResponseStatusException ex){
+            return  ResponseEntity.status(ex.getStatusCode()).build();
+        }
     }
 }

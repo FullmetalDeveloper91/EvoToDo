@@ -1,18 +1,15 @@
 package ru.fmd.todo_service.todo_service.service;
 
-import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import org.springframework.web.server.ResponseStatusException;
 import ru.fmd.todo_service.todo_service.model.Status;
 import ru.fmd.todo_service.todo_service.model.Task;
-import ru.fmd.todo_service.todo_service.model.User;
 import ru.fmd.todo_service.todo_service.repository.TasksRepository;
-import ru.fmd.todo_service.todo_service.repository.UserServiceDao;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,15 +21,19 @@ public class TaskService {
 
     private final TasksRepository tasksRepository;
 
-    public TaskService(TasksRepository tasksRepository) {
+    private final TransactionalOperator transactionalOperator;
+
+    public TaskService(TasksRepository tasksRepository,
+                       TransactionalOperator transactionalOperator) {
         this.tasksRepository = tasksRepository;
+        this.transactionalOperator = transactionalOperator;
     }
 
     public List<Task> getAll() {
         return tasksRepository.findAll();
     }
 
-    public List<Task> getAll(String login) {
+    public List<Task> getByLogin(String login) {
         return tasksRepository.findByLogin(login);
     }
 
@@ -46,8 +47,10 @@ public class TaskService {
     }
 
     @Transactional
-    public Task update(Long id, String description) {
+    public Task update(Long id, String description, String ownerLogin) throws AuthorizationDeniedException {
         var task = tasksRepository.findById(id).orElseThrow(() -> notFoundExceptionMethod(id));
+        if(!task.getLogin().equals(ownerLogin))
+            throw new AuthorizationDeniedException("The administrator or the owner has the right to close the task");
         task.setDescription(description);
         return tasksRepository.save(task);
     }
@@ -61,11 +64,11 @@ public class TaskService {
     }
 
     @Transactional
-    public Task closeTask(Long id, String login) {
+    public Task closeTask(Long id, String login) throws AuthorizationDeniedException, ResponseStatusException {
         Task task = tasksRepository.findById(id).orElseThrow(() -> notFoundExceptionMethod(id));
 
         if(!task.getLogin().equals(login))
-            throw new AuthorizationDeniedException("The administrator or the owner has the right to close the task");
+            throw new AuthorizationDeniedException("Only owner has the right to close the task");
 
         task.setSuccessAt(LocalDateTime.now());
         task.setStatus(Status.SUCCESS);
@@ -73,8 +76,10 @@ public class TaskService {
         return tasksRepository.save(task);
     }
 
-    public Task delete(Long id) {
+    public Task delete(Long id, String ownerLogin) throws AuthorizationDeniedException, ResponseStatusException {
         Task task = tasksRepository.findById(id).orElseThrow(() -> notFoundExceptionMethod(id));
+        if(!task.getLogin().equals(ownerLogin))
+            throw new AuthorizationDeniedException("Only owner has the right to delete the task");
         tasksRepository.delete(task);
         return task;
     }
