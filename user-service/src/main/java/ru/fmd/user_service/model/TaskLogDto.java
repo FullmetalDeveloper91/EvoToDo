@@ -1,4 +1,4 @@
-package ru.fmd.log_service.model;
+package ru.fmd.user_service.model;
 
 public class TaskLogDto {
     private UserAction action;

@@ -1,9 +1,8 @@
-package ru.fmd.log_service.model;
+package ru.fmd.task_service.model;
 
 public class TaskLogDto {
     private UserAction action;
     private String description;
-
 
     public TaskLogDto(UserAction action, String description) {
         this.action = action;

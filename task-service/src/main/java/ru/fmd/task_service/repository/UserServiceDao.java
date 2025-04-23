@@ -1,4 +1,4 @@
-package ru.fmd.log_service.repository;
+package ru.fmd.task_service.repository;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -7,7 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import ru.fmd.log_service.model.User;
+import ru.fmd.task_service.model.User;
 
 
 @Component
@@ -38,4 +38,5 @@ public class UserServiceDao {
 
         return restTemplate.exchange(urlWithPathParam, HttpMethod.GET, request, User.class , pathParameter);
     }
+
 }

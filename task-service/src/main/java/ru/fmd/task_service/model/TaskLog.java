@@ -1,16 +1,11 @@
-package ru.fmd.log_service.model;
-
-import jakarta.persistence.*;
+package ru.fmd.task_service.model;
 
 import java.time.LocalDateTime;
 
-@Entity
 public class TaskLog {
-    @Id @GeneratedValue
     private Long id;
     private String login;
     private LocalDateTime createdAt;
-    @Enumerated(EnumType.STRING)
     private UserAction action;
     private String description;
 

@@ -1,15 +1,14 @@
-package ru.fmd.log_service.config;
+package ru.fmd.task_service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.fmd.log_service.filter.JwtAuthFilter;
+import ru.fmd.task_service.filter.JwtAuthFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -21,12 +20,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain configureSecurity(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain configureSecurity(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity
                 .csrf(CsrfConfigurer::disable)
-                .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers(HttpMethod.GET, "/api/v1/log").hasRole("ADMIN")
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(managerRequestMatchers -> managerRequestMatchers
+                        .requestMatchers("/api/v1/task/all").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
