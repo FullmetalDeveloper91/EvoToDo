@@ -19,6 +19,11 @@ public class GatewayConfig {
                         .filters(f -> f.prefixPath("/api/v1"))
                         .uri("lb://TASK-SERVICE")
                 )
+                .route(p -> p
+                        .path("/log/**")
+                        .filters(f->f.prefixPath("/api/v1"))
+                        .uri("lb://LOG-SERVICE")
+                )
                 .build();
     }
 }

@@ -12,6 +12,11 @@
           <package value="ru.fmd.todo_service.todo_service" />
         </packages>
       </persistence-unit>
+      <persistence-unit moduleName="log-service" name="Default">
+        <packages>
+          <package value="ru.fmd.log_service" />
+        </packages>
+      </persistence-unit>
     </persistence-units>
   </component>
 </project>
