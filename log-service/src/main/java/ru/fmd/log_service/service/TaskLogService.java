@@ -21,6 +21,20 @@ public class TaskLogService {
         return repository.findAll();
     }
 
+    public List<TaskLog> findAll(LocalDateTime dateTimeFrom, LocalDateTime dateTimeTo) {
+        dateTimeFrom = dateTimeFrom == null ? LocalDateTime.of(1970,1,1,0,0): dateTimeFrom;
+        dateTimeTo = dateTimeTo == null ? LocalDateTime.now() : dateTimeTo;
+
+        return repository.findLogs(dateTimeFrom, dateTimeTo);
+    }
+
+    public List<TaskLog> findByLogin(String login, LocalDateTime dateTimeFrom, LocalDateTime dateTimeTo) {
+        dateTimeFrom = dateTimeFrom == null ? LocalDateTime.of(1970,1,1,0,0): dateTimeFrom;
+        dateTimeTo = dateTimeTo == null ? LocalDateTime.now() : dateTimeTo;
+
+        return repository.findLogsByLogin(login, dateTimeFrom, dateTimeTo);
+    }
+
     public TaskLog create(String login, TaskLogDto logDto){
         var taskLog = new TaskLog(login, LocalDateTime.now(), logDto.getAction(), logDto.getDescription());
         return repository.save(taskLog);

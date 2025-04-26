@@ -7,6 +7,7 @@ import ru.fmd.log_service.model.TaskLog;
 import ru.fmd.log_service.model.TaskLogDto;
 import ru.fmd.log_service.service.TaskLogService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -19,8 +20,18 @@ public class TaskLogController {
     }
 
     @GetMapping
-    public List<TaskLog> findAll(){
-        return taskLogService.findAll();
+    public List<TaskLog> findAll(
+            @RequestParam(name = "date_from", required = false )LocalDateTime dateTimeFrom,
+            @RequestParam(name = "date_to", required = false ) LocalDateTime dateTimeTo){
+        return taskLogService.findAll(dateTimeFrom, dateTimeTo);
+    }
+
+    @GetMapping("/{login}")
+    public List<TaskLog> findByLogin(
+            @PathVariable String login,
+            @RequestParam(name = "date_from", required = false )LocalDateTime dateTimeFrom,
+            @RequestParam(name = "date_to", required = false ) LocalDateTime dateTimeTo){
+        return taskLogService.findByLogin(login, dateTimeFrom, dateTimeTo);
     }
 
     @PostMapping
