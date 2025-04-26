@@ -35,9 +35,19 @@ public class TaskLogController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskLog> createLog(
+    public ResponseEntity<TaskLog> create(
             @RequestBody TaskLogDto taskLogDto,
             SecurityContextHolderAwareRequestWrapper securityContext){
         return ResponseEntity.ok(taskLogService.create(securityContext.getRemoteUser(), taskLogDto));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskLog> update(@PathVariable Long id, @RequestBody TaskLogDto taskLogDto){
+        return ResponseEntity.ok(taskLogService.update(id, taskLogDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<TaskLog> delete(@PathVariable Long id){
+        return ResponseEntity.ok(taskLogService.delete(id));
     }
 }

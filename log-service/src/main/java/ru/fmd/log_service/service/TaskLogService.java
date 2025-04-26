@@ -1,6 +1,8 @@
 package ru.fmd.log_service.service;
 
+import jakarta.ws.rs.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.fmd.log_service.model.TaskLog;
 import ru.fmd.log_service.model.TaskLogDto;
 import ru.fmd.log_service.repository.TaskLogRepository;
@@ -37,6 +39,23 @@ public class TaskLogService {
 
     public TaskLog create(String login, TaskLogDto logDto){
         var taskLog = new TaskLog(login, LocalDateTime.now(), logDto.getAction(), logDto.getDescription());
+        return repository.save(taskLog);
+    }
+
+    @Transactional
+    public TaskLog delete(Long id) {
+        var taskLog = repository.findById(id).orElseThrow(
+                () -> new NotFoundException("Log with ID %d not found".formatted(id)));
+        repository.delete(taskLog);
+        return taskLog;
+    }
+
+    @Transactional
+    public TaskLog update(Long id, TaskLogDto taskLogDto) {
+        var taskLog = repository.findById(id).orElseThrow(
+                () -> new NotFoundException("Log with ID %d not found".formatted(id)));
+
+        taskLog = taskLogDto.updateTaskLog(taskLog);
         return repository.save(taskLog);
     }
 }

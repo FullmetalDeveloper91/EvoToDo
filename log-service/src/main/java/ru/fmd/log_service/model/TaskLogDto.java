@@ -17,4 +17,14 @@ public class TaskLogDto {
     public String getDescription() {
         return description;
     }
+
+    public TaskLog updateTaskLog(TaskLog taskLog){
+        if(action != null && taskLog.getAction() != action)
+            taskLog.setAction(action);
+
+        if(!description.isBlank() && !taskLog.getDescription().equals(description))
+            taskLog.setDescription(description);
+
+        return taskLog;
+    }
 }
