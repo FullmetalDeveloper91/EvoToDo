@@ -1,4 +1,4 @@
-package ru.fmd.user_service;
+package ru.fmd.user_service.config;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;

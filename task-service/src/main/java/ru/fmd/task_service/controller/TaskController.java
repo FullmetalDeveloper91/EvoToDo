@@ -54,11 +54,11 @@ public class TaskController {
     public ResponseEntity<Task> create(
             @RequestBody TaskRequestDTO taskReq,
             SecurityContextHolderAwareRequestWrapper securityContext) {
-        var newTask = taskService.create(securityContext.getRemoteUser(),taskReq.getDescription());
-        logDao.writeLog(UserAction.CREATE_TASK, "User create task with id %d".formatted(newTask.getId()),securityContext.getHeader("Authorization"));
+        //var newTask = taskService.create(securityContext.getRemoteUser(),taskReq.getDescription());
+        //logDao.writeLog(UserAction.CREATE_TASK, "User create task with id %d".formatted(newTask.getId()),securityContext.getHeader("Authorization"));
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(newTask);
+                .body(taskService.create(securityContext.getRemoteUser(),taskReq.getDescription()));
     }
 
     @PutMapping("/{id}")
