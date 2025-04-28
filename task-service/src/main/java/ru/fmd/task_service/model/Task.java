@@ -1,6 +1,8 @@
 package ru.fmd.task_service.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 
@@ -8,7 +10,11 @@ import java.time.LocalDateTime;
 public class Task {
     @Id @GeneratedValue
     private Long id;
+    @Length(min = 3, max = 50, message = "Length must be between 3 and 50")
+    @NotBlank
     private String login;
+    @Length(min = 10, max = 200, message = "Length must be between 10 and 200")
+    @NotBlank
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime successAt;

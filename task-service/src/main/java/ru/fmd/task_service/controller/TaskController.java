@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.fmd.task_service.aspect.ToLog;
@@ -52,7 +53,7 @@ public class TaskController {
     @PostMapping
     @ToLog(action = UserAction.CREATE_TASK)
     public ResponseEntity<Task> create(
-            @RequestBody TaskRequestDTO taskReq,
+            @RequestBody @Validated TaskRequestDTO taskReq,
             SecurityContextHolderAwareRequestWrapper securityContext) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -63,7 +64,7 @@ public class TaskController {
     @ToLog(action = UserAction.CHANGE_TASK)
     public ResponseEntity<Task> update(
             @PathVariable Long id,
-            @RequestBody TaskRequestDTO taskReq,
+            @RequestBody @Validated TaskRequestDTO taskReq,
             SecurityContextHolderAwareRequestWrapper securityContext) {
         return ResponseEntity.ok(taskService.update(
                 id,

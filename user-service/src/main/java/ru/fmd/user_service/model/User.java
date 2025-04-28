@@ -1,25 +1,23 @@
 package ru.fmd.user_service.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
 
-
-//TODO Добавить валидацию
 @Entity
 @Table(name = "UserDetails")
 public class User{
     @Id @GeneratedValue
     private int id;
     @Column(unique = true)
-    //@Min(value = 3, message = "Must be longer by 3")
-    //@Max(value = 20, message = "Must be shorter by 20")
+    @Length(min = 3, max = 50, message = "Length must be between 3 and 50")
+    @NotBlank
     private String login;
-    //@Min(value = 4,message = "Must be longer by 4")
-   // @Max(value = 20, message = "Must be shorter by 20")
+    @Length(min = 4, max = 20, message = "Length must be between 4 and 20")
+    @NotBlank
     private String password;
-   // @Min(value = 6,message = "Must be longer by 6")
-   // @Max(value = 100, message = "Must be shorter by 100")
+    @Length(min = 5, max = 100, message = "Length must be between 5 and 100")
+    @NotBlank
     private String fio;
     @Enumerated(EnumType.STRING)
     private Role role;

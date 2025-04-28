@@ -1,6 +1,11 @@
 package ru.fmd.task_service.model;
 
+import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
+
 public class TaskRequestDTO {
+    @Length(min = 10, max = 200, message = "Length must be between 10 and 200")
+    @NotBlank
     private String description;
 
     public TaskRequestDTO() {
