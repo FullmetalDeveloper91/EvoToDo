@@ -12,14 +12,14 @@ public class User{
     @Id @GeneratedValue
     private int id;
     @Column(unique = true)
-    @Min(value = 3, message = "Must be longer by 3")
-    @Max(value = 10, message = "Must be shorter by 10")
+    //@Min(value = 3, message = "Must be longer by 3")
+    //@Max(value = 20, message = "Must be shorter by 20")
     private String login;
-    @Min(value = 4,message = "Must be longer by 4")
-    @Max(value = 16, message = "Must be shorter by 16")
+    //@Min(value = 4,message = "Must be longer by 4")
+   // @Max(value = 20, message = "Must be shorter by 20")
     private String password;
-    @Min(value = 6,message = "Must be longer by 6")
-    @Max(value = 100, message = "Must be shorter by 100")
+   // @Min(value = 6,message = "Must be longer by 6")
+   // @Max(value = 100, message = "Must be shorter by 100")
     private String fio;
     @Enumerated(EnumType.STRING)
     private Role role;

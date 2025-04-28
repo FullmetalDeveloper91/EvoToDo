@@ -3,9 +3,13 @@ package ru.fmd.user_service.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.fmd.user_service.aspect.ToLog;
 import ru.fmd.user_service.model.*;
+import ru.fmd.user_service.model.dto.NewUserDto;
+import ru.fmd.user_service.model.dto.UserLoginDto;
+import ru.fmd.user_service.model.dto.UserUpdateDto;
 import ru.fmd.user_service.service.UserService;
 
 import java.util.List;
@@ -36,7 +40,7 @@ public class UserController {
     public ResponseEntity<User> update(
             @PathVariable String login,
             SecurityContextHolderAwareRequestWrapper securityContext,
-            @Valid @RequestBody UserUpdateDto user){
+            @RequestBody @Validated UserUpdateDto user){
         return ResponseEntity.ok(userService.update(login, user));
     }
 
@@ -49,14 +53,14 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@Valid @RequestBody NewUserDto user){
+    public ResponseEntity<User> register(@RequestBody @Validated NewUserDto user){
         return ResponseEntity.ok(userService.registerUser(
                 new User(user.getLogin(), user.getPassword(), user.getFio(), user.getRole())));
     }
 
     @PostMapping("/login")
     @ToLog(action = UserAction.AUTHORIZATION)
-    public ResponseEntity<String> login (@Valid@RequestBody User user) {
-        return ResponseEntity.ok(userService.signUpUser(user));
+    public ResponseEntity<String> login (@RequestBody @Validated UserLoginDto userLoginDto) {
+        return ResponseEntity.ok(userService.signUpUser(userLoginDto.toUser()));
     }
 }

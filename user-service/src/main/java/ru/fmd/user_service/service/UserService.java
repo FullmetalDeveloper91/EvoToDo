@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.fmd.user_service.model.Role;
 import ru.fmd.user_service.model.User;
-import ru.fmd.user_service.model.UserUpdateDto;
+import ru.fmd.user_service.model.dto.UserUpdateDto;
 import ru.fmd.user_service.repository.UserRepository;
 
 import java.util.List;
