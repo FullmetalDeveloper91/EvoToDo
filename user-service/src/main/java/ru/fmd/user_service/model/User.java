@@ -13,7 +13,7 @@ public class User{
     @Length(min = 3, max = 50, message = "Length must be between 3 and 50")
     @NotBlank
     private String login;
-    @Length(min = 4, max = 20, message = "Length must be between 4 and 20")
+    @Length(min = 4, max = 100, message = "Length must be between 4 and 100")
     @NotBlank
     private String password;
     @Length(min = 5, max = 100, message = "Length must be between 5 and 100")
