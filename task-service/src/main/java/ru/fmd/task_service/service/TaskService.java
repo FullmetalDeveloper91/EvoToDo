@@ -46,16 +46,8 @@ public class TaskService {
     public Task update(Long id, String description, String ownerLogin) throws AuthorizationDeniedException {
         var task = tasksRepository.findById(id).orElseThrow(() -> notFoundExceptionMethod(id));
         if(!task.getLogin().equals(ownerLogin))
-            throw new AuthorizationDeniedException("The administrator or the owner has the right to close the task");
+            throw new AuthorizationDeniedException("Only owner has the right to change the tasks");
         task.setDescription(description);
-        return tasksRepository.save(task);
-    }
-
-    @Transactional
-    public Task closeTask(Long id){
-        Task task = tasksRepository.findById(id).orElseThrow(() -> notFoundExceptionMethod(id));
-        task.setSuccessAt(LocalDateTime.now());
-        task.setStatus(Status.SUCCESS);
         return tasksRepository.save(task);
     }
 
