@@ -2,6 +2,7 @@ package ru.fmd.task_service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -24,7 +25,7 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(managerRequestMatchers -> managerRequestMatchers
-                        .requestMatchers("/api/v1/task/all").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/api/v1/task").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
