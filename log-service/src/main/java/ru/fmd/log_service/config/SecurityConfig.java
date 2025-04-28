@@ -24,6 +24,7 @@ public class SecurityConfig {
     public SecurityFilterChain configureSecurity(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(CsrfConfigurer::disable)
+                //Все маршруты, кроме Post доступны лишь администратору
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.GET, "/api/v1/log/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/log/**").hasRole("ADMIN")
