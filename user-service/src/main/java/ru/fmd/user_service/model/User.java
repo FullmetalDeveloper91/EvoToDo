@@ -1,6 +1,8 @@
 package ru.fmd.user_service.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 
 //TODO Добавить валидацию
@@ -10,8 +12,14 @@ public class User{
     @Id @GeneratedValue
     private int id;
     @Column(unique = true)
+    @Min(value = 3, message = "Must be longer by 3")
+    @Max(value = 10, message = "Must be shorter by 10")
     private String login;
+    @Min(value = 4,message = "Must be longer by 4")
+    @Max(value = 16, message = "Must be shorter by 16")
     private String password;
+    @Min(value = 6,message = "Must be longer by 6")
+    @Max(value = 100, message = "Must be shorter by 100")
     private String fio;
     @Enumerated(EnumType.STRING)
     private Role role;

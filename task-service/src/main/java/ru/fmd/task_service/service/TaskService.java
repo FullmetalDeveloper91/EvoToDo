@@ -80,10 +80,6 @@ public class TaskService {
         return task;
     }
 
-    private ResponseStatusException notFoundExceptionMethod(Long id){
-        return new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id));
-    }
-
     public List<Task> getActualTasks(LocalDateTime from, LocalDateTime to, String login) {
         from = from==null?LocalDateTime.of(1970,1,1,0,0):from;
         to = to==null?LocalDateTime.now():to;
@@ -96,5 +92,9 @@ public class TaskService {
         to = to==null?LocalDateTime.now():to;
 
         return tasksRepository.findActualTasks(Status.CREATED, from, to);
+    }
+
+    private ResponseStatusException notFoundExceptionMethod(Long id){
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id));
     }
 }

@@ -1,6 +1,10 @@
 package ru.fmd.user_service.model;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+
 public class UserUpdateDto {
+    @Min(6) @Max(30)
     private String fio;
     private Role role;
 

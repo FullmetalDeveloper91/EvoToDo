@@ -20,29 +20,37 @@ public class LogAspect {
     }
 
     @Pointcut("@within(org.springframework.web.bind.annotation.RestController)")
-    public void isControllerLayer(){
-    }
-
-    @Pointcut("isControllerLayer() && @annotation(org.springframework.web.bind.annotation.GetMapping)")
-    public void hasGetMapping(){
-    }
-
-    @Pointcut("execution(public * ru.fmd.task_service.controller.*Controller.create(..))")
-    public void isCreateTaskMethod(){
-
-    }
+    public void isControllerLayer(){}
 
     @AfterReturning(value = "isControllerLayer()" +
-            "&&isCreateTaskMethod()" +
-            "&& args(*, securityContext)",
-        returning = "responseWithTask")
-    public void addLogging(ResponseEntity<Task> responseWithTask, SecurityContextHolderAwareRequestWrapper securityContext){
+            "&&@annotation(toLog)" +
+            "&&args(*, securityContext)",
+            returning = "responseWithTask")
+    public void addLogging(
+            ToLog toLog,
+            ResponseEntity<Task> responseWithTask,
+            SecurityContextHolderAwareRequestWrapper securityContext){
+
         var newTask = responseWithTask.getBody();
-        if(newTask!=null)
+        String message = "";
+
+        if(newTask != null) {
+            switch (toLog.action()) {
+                case CREATE_TASK -> message = "User %s create task with id %d"
+                                        .formatted(securityContext.getRemoteUser(), newTask.getId());
+                case CHANGE_TASK -> message = "User %s changed task with id %d"
+                                        .formatted(securityContext.getRemoteUser(), newTask.getId());
+                case CLOSING_TASK -> message = "User %s close task with id %d"
+                                        .formatted(securityContext.getRemoteUser(), newTask.getId());
+                case DELETE_TASK -> message = "User %s delete task with id %d"
+                                        .formatted(securityContext.getRemoteUser(), newTask.getId());
+            }
+
             logDao.writeLog(
-                    UserAction.CREATE_TASK,
-                    "User create task with id %d".formatted(newTask.getId()),
+                    toLog.action(),
+                    message,
                     securityContext.getHeader("Authorization")
             );
+        }
     }
-} 
+}

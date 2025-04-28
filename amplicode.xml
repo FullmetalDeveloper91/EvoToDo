@@ -7,14 +7,14 @@
           <package value="ru.fmd.user_service.user_service" />
         </packages>
       </persistence-unit>
-      <persistence-unit moduleName="task-service" name="Default">
-        <packages>
-          <package value="ru.fmd.task_service.todo_service" />
-        </packages>
-      </persistence-unit>
       <persistence-unit moduleName="log-service" name="Default">
         <packages>
           <package value="ru.fmd.log_service" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="task-service" name="Default">
+        <packages>
+          <package value="ru.fmd.task_service" />
         </packages>
       </persistence-unit>
     </persistence-units>

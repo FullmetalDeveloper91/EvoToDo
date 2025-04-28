@@ -22,7 +22,7 @@ public class JwtService {
         return username.equals(user.getLogin()) && !isTokenExpired(token);
     }
 
-    public String extractUsername(String token){
+    public String extractUsername(String token) throws io.jsonwebtoken.JwtException{
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -30,7 +30,7 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    private <T> T extractClaim(String token, Function<Claims,T> resolver){
+    private <T> T extractClaim(String token, Function<Claims,T> resolver) throws io.jsonwebtoken.JwtException{
         Claims claims = extractAllClaims(token);
         return resolver.apply(claims);
     }
@@ -39,7 +39,7 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private Claims extractAllClaims(String token){
+    private Claims extractAllClaims(String token) throws io.jsonwebtoken.JwtException{
         return Jwts.parser()
                 .verifyWith(getSignKey())
                 .build()
