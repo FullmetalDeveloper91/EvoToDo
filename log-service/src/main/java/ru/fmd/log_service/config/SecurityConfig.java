@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/log/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/log/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/log/**").hasRole("ADMIN")
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

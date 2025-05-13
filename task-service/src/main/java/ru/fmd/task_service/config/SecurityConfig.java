@@ -26,6 +26,7 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(managerRequestMatchers -> managerRequestMatchers
                         .requestMatchers(HttpMethod.GET,"/api/v1/task").hasRole("ADMIN")
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

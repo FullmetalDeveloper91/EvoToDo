@@ -1,0 +1,101 @@
+services:
+  eureka:
+    image: eureka:latest
+    restart: on-failure
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8761/actuator/health || exit 1
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
+    labels:
+      amplicode.image: springboot
+    networks:
+      - ToDoNet
+  user-service:
+    image: userservice:latest
+    restart: on-failure
+    environment:
+      eureka.client.serviceUrl.defaultZone:
+        http://eureka:8761/eureka
+      spring.datasource.url:
+        jdbc:h2:/application/data/userdb;AUTO_SERVER=TRUE
+    depends_on:
+      eureka:
+        condition: service_healthy
+    labels:
+      amplicode.image: springboot
+    networks:
+      - ToDoNet
+    volumes:
+      - user_db:/application/data
+    deploy:
+      replicas: 2
+  task-service:
+    image: taskservice:latest
+    restart: "no"
+    environment:
+      eureka.client.serviceUrl.defaultZone:
+        http://eureka:8761/eureka
+      spring.datasource.url:
+        jdbc:h2:/application/data/taskdb;AUTO_SERVER=TRUE
+    depends_on:
+      eureka:
+        condition: service_healthy
+    labels:
+      amplicode.image: springboot
+    networks:
+      - ToDoNet
+    volumes:
+      - task_db:/application/data
+    deploy:
+      replicas: 2
+  log-service:
+    image: logservice:latest
+    restart: "no"
+    environment:
+      eureka.client.serviceUrl.defaultZone:
+        http://eureka:8761/eureka
+      spring.datasource.url:
+        jdbc:h2:/application/data/logdb;AUTO_SERVER=TRUE
+    depends_on:
+      eureka:
+        condition: service_healthy
+    labels:
+      amplicode.image: springboot
+    networks:
+      - ToDoNet
+    volumes:
+      - log_db:/application/data
+    deploy:
+      replicas: 2
+  gateway:
+    image: gateway:latest
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    environment:
+      eureka.client.serviceUrl.defaultZone:
+        http://eureka:8761/eureka
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
+    depends_on:
+      - user-service
+      - task-service
+      - log-service
+    labels:
+      amplicode.image: springboot
+    networks:
+      - ToDoNet
+volumes:
+  user_db:
+  task_db:
+  log_db:
+networks:
+  ToDoNet:
